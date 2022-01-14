@@ -1,0 +1,15 @@
+version: '3'
+
+x-base: &base
+  restart: always
+  env_file:
+    - .env
+  command: /start.sh
+
+services:
+  bot:
+    <<: *base
+    build:
+      context: .
+      dockerfile: ./compose/production/bot/Dockerfile
+    command: /app/start.sh
