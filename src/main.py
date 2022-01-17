@@ -1,28 +1,13 @@
-from telegram.ext import Updater
-
-from conf.settings import BOT_TOKEN, JOB_TIME, logger
-from handlers import start_handler
-from jobs import start_job
+from aiogram.utils import executor
+from settings.common import dp
+from handlers import start_game
 
 
-def main():
-    updater = Updater(token=BOT_TOKEN)
-    dispatcher = updater.dispatcher
-    job_queue = updater.job_queue
+start_game.register_handlers_other(dp)
 
-    dispatcher.add_handler(start_handler)
 
-    job_queue.run_repeating(start_job, JOB_TIME)
-
-    # Start the Bot
-    updater.start_polling()
-    logger.info('bot started')
-
-    # Block until you press Ctrl-C or the process receives SIGINT, SIGTERM or
-    # SIGABRT. This should be used most of the time, since start_polling() is
-    # non-blocking and will stop the bot gracefully.
-    updater.idle()
-
+async def on_startup(_):
+    print('Работает')
 
 if __name__ == '__main__':
-    main()
+    executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
