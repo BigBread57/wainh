@@ -1,10 +1,9 @@
 from aiogram.utils import executor
 from settings.common import dp
-from handlers import start_game
+from handlers import start_game, create_game
 
-
+create_game.register_handlers_other(dp)
 start_game.register_handlers_other(dp)
-
 
 async def on_startup(_):
     print('Работает')

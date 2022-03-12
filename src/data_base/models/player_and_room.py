@@ -47,8 +47,8 @@ class Player(Base):
     rating = sa.Column(sa.Integer)
     rooms = relationship(
         'Room',
-        secondary='players_in_room',
-        backref='players',
+        secondary=players_in_room,
+        back_populates='players',
     )
 
 
@@ -62,7 +62,7 @@ class Room(Base):
     players = relationship(
         'Player',
         secondary=players_in_room,
-        backref='rooms',
+        back_populates='rooms',
     )
     created_at = sa.Column(sa.DateTime)
 

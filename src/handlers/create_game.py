@@ -3,8 +3,9 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
+from data_base.request_for_db.create_game import get_username
 from src.buttons.common_buttons import common_buttons
-from src.buttons.settings_buttons import yes_no_buttons, cancel_buttons, view_pause_buttons
+from src.buttons.settings_buttons import yes_no_buttons, cancel_buttons, view_pause_buttons, cancel_skip_buttons
 
 
 class FSMNewGame(StatesGroup):
@@ -23,7 +24,14 @@ async def create_game(message: types.Message):
         'Внимание! Создатель игры автоматически становится ведущим.',
         reply_markup=cancel_buttons,
     )
-    await message.reply('Укажите свой ник для игры.')
+
+    username_game = await get_username(message.from_user.id)
+    if username_game:
+        await message.reply(
+            f'Укажите новый ник для игры, или используйте {username_game}',
+            reply_markup=cancel_skip_buttons)
+    else:
+        await message.reply('Укажите ник для игры.')
 
 
 async def username(message: types.Message, state: FSMContext):
@@ -32,6 +40,7 @@ async def username(message: types.Message, state: FSMContext):
         if message.text == '/Отменить':
             await cancel_create_task(message, state)
         else:
+
             # СДЕЛАТЬ ПРОВЕРКУ ЕСТЬ ЛИ НИК У ИГРОКА ИЛИ НЕТ
             await message.answer('Добавить юмор в игру?', reply_markup=yes_no_buttons)
 
@@ -66,6 +75,7 @@ async def pause_call(
 
 
 async def cancel_create_task(message: types.Message, state: FSMContext):
+    """Отмена создания игры."""
     current_state = await state.get_state()
     if current_state is None:
         return
@@ -76,7 +86,7 @@ async def cancel_create_task(message: types.Message, state: FSMContext):
 def register_handlers_other(dp: Dispatcher):
     """Регистрация обработчиков."""
     dp.register_message_handler(create_game, commands=['Создать_игру'])
-    dp.register_message_handler(username, FSMNewGame.username)
+    dp.register_message_handler(username, state=FSMNewGame.username)
     dp.register_callback_query_handler(humor_call, state=FSMNewGame.humor)
     dp.register_callback_query_handler(pause_call, state=FSMNewGame.view_pause)
     dp.register_message_handler(cancel_create_task, state="*", commands=['Отменить'])

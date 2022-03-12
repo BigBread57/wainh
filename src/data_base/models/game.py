@@ -27,7 +27,7 @@ class Game(Base):
     point_resistance = sa.Column(sa.Integer)
     help_call_friends = sa.Column(sa.Boolean, default=False)
     help_question_yes_no = sa.Column(sa.Boolean, default=False)
-    room = relationship(
+    game_room = relationship(
         'Room',
         uselist=False,
         backref='game',

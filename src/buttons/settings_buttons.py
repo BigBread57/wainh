@@ -6,9 +6,12 @@ from aiogram.types import (
 )
 
 cancel_buttons = ReplyKeyboardMarkup(resize_keyboard=True)
+cancel_skip_buttons = ReplyKeyboardMarkup(resize_keyboard=True)
 cancel = KeyboardButton('/Отменить')
+skip = KeyboardButton('/Пропустить')
 
 cancel_buttons.row(cancel)
+cancel_skip_buttons.row(cancel, skip)
 
 
 yes_no_buttons = InlineKeyboardMarkup(row_width=1)

@@ -53,7 +53,7 @@ class Category(Base):
     questions = relationship(
         'Question',
         secondary=categories_questions,
-        backref='categories',
+        back_populates='categories',
     )
 
 

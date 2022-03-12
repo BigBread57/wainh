@@ -1,5 +1,3 @@
-import re
-
 from aiogram import types, Dispatcher
 
 from src.buttons.common_buttons import common_buttons
